@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Sarcasm Sniffer</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{{ url_for('static', filename='img/icon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='img/icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <link href="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script>
+</head>
+<body>
+
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center justify-content-between">
+
+        <h1 class="logo"><a href="{{ url_for('home') }}">Sคr¢คSɱ SŋiʄʄeR</a></h1>
+
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                <li><a class="nav-link scrollto" href="#about">About</a></li>
+                <li><a class="nav-link scrollto" href="#predict">Predict</a></li>
+                <li><a class="nav-link scrollto " href="#team">Contact Us</a></li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+
+    </div>
+</header><!-- End Header -->
+
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+    <div class="hero-container">
+        <h3>WELCOME</h3>
+        <h2>Your Ultimate Sarcasm Detection Tool for Tweets, Gain Insights and Enhance Communication!</h2>
+        <a href="#about" class="btn-get-started scrollto">Get Started</a>
+    </div>
+</section><!-- End Hero -->
+
+<main id="main">
+
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about">
+        <div class="container">
+
+            <div class="section-title">
+                <h2>About Sarcasm Sniffer</h2>
+                <h3>Discover More <span>About Our Sarcasm Detection System</span></h3>
+                <p>Curious about how our sarcasm detection system revolutionizes business understanding? Read on to find
+                    out!</p>
+            </div>
+
+            <div class="row content">
+                <div class="col-lg-6">
+                    <p>
+                        In the ever-evolving landscape of Information Technology, the project at hand focuses on the
+                        intricate task of sarcasm detection in textual data with emojis and hashtags. As online
+                        communication becomes increasingly complex, discerning between sarcastic and genuine expressions
+                        presents a significant challenge. This project builds upon existing work in natural language
+                        processing and sentiment analysis, aiming to advance the capabilities of sarcasm detection
+                        systems.
+                    </p>
+                    <ul>
+                        <li><i class="ri-check-double-line"></i> The project aims to accurately identify sarcasm in
+                            textual content, primarily focusing on tweets but extending to other forms of online
+                            communication.
+                        </li>
+                        <li><i class="ri-check-double-line"></i> Developing a robust sarcasm detection system is the
+                            main challenge, requiring high precision in discerning between sarcastic and genuine
+                            expressions.
+                        </li>
+                        <li><i class="ri-check-double-line"></i> The significance of this problem is highlighted by the
+                            increasing prevalence of online communication and the nuanced nature of sarcasm.
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 pt-4 pt-lg-0">
+                    <p>
+                        The primary objectives of this project are to develop a robust sarcasm detection system using
+                        machine learning and deep learning models.
+                    </p>
+                    <ul>
+                        <li><i class="ri-check-double-line"></i> Objectives align with developing a reliable sarcasm
+                            detection system to enhance the accuracy and efficiency of identifying sarcastic
+                            expressions.
+                        </li>
+                        <li><i class="ri-check-double-line"></i> Solving the sarcasm detection problem contributes to
+                            advancements in natural language processing and sentiment analysis in Information
+                            Technology.
+                        </li>
+                        <li><i class="ri-check-double-line"></i> The Problem Definition section establishes a solid
+                            foundation for addressing the challenge of sarcasm detection in diverse textual content.
+                        </li>
+                    </ul>
+                    <a href="#cta" class="btn-learn-more">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section><!-- End About Section -->
+
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+        <div class="container">
+
+            <div class="text-center">
+                <h3>Try Out Sarcasm Detection Yourself</h3>
+                <p>Experience the power of sarcasm detection firsthand. Click below to give it a try!</p>
+                <a class="cta-btn" href="#predict">Let's Go!</a>
+            </div>
+
+        </div>
+
+    </section><!-- End Cta Section -->
+
+    <section id="predict" class="predict">
+        <div class="container">
+            <h2>Experience the future of tweet analysis with Sarcasm Sniffer. Get started today and decode the
+                hidden meanings behind every tweet!</h2>
+            <div>
+                <h1>Predict using Machine Learning model</h1>
+                <h2>Logistic Regression</h2>
+                <form id="prediction_form_lr" method="post">
+                    <label for="text_input">Enter Text:</label>
+                    <input type="text" id="text_input" name="text" required>
+                    <button type="submit">Predict</button>
+                </form>
+
+                <div id="prediction_result_lr"></div>
+                <script>
+                    document.getElementById('prediction_form_lr').addEventListener('submit', async function (e) {
+                        e.preventDefault();
+                        const formData = new FormData(this);
+                        const response = await fetch('/predict_lr', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await response.json();
+                        document.getElementById('prediction_result_lr').innerText = 'Prediction: ' + data.prediction;
+                    });
+                </script>
+            </div>
+        </div>
+
+    </section><!-- End Predict Section -->
+
+    <!-- ======= Team Section ======= -->
+    <section id="team" class="team">
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <h3>Meet Our Creative <span>Minds</span></h3>
+                <h6>A diverse group of passionate individuals dedicated to excellence. From project management to
+                    design, our team brings a wealth of expertise to the table. Together, we're committed to creating
+                    innovative solutions and delivering exceptional results that make a positive impact.</h6>
+                <h6>The success of this project owes greatly to the invaluable suggestions and advice provided by our
+                    mentors at various stages of the development lifecycle. Their contributions have been indispensable
+                    in navigating challenges and achieving our objectives.</h6>
+            </div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-lg-4 col-md-4 d-flex align-items-stretch">
+                    <div class="member">
+                        <div class="member-img">
+                            <img src="{{ url_for('static', filename='img/team/aamina.jpeg') }}" class="img-fluid"
+                                 alt="">
+                            <div class="social">
+                                <h6></h6>
+                            </div>
+                        </div>
+                        <div class="member-info">
+                            <h4>Atlaswala Aamina</h4>
+                            <span>Roll no - T21003</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-8 d-flex align-items-stretch">
+                    <div class="member">
+                        <div class="member-img">
+                            <img src="{{ url_for('static', filename='img/team/ambreen_maam.jpeg') }}" class="img-fluid"
+                                 alt="">
+                            <div class="social">
+                                <h6>Meet the driving force behind our project's success – Ambreen Shaikh. Her
+                                    leadership, mentorship, and infectious enthusiasm propel us forward.</h6>
+                            </div>
+                        </div>
+                        <div class="member-info">
+                            <h4>Prof Ambreen Shaikh</h4>
+                            <span><b>Our Project Guide</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 d-flex align-items-stretch">
+                    <div class="member">
+                        <div class="member-img">
+                            <img src="{{ url_for('static', filename='img/team/zainab.jpg') }}" class="img-fluid" alt="">
+                            <div class="social">
+                                <h6></h6>
+                            </div>
+                        </div>
+                        <div class="member-info">
+                            <h4>Zainab Shaikh</h4>
+                            <span>Roll no - T21034</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Team Section -->
+
+</main><!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+
+    <div class="footer-top">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 col-md-6 footer-contact">
+                    <h3>SคR¢คSⱮ SŊIʄʄER</h3>
+                    <p>
+                        Sophia College (AUTONOMOUS) <br>
+                        Bhulabhai Desai Marg, Cumballa Hill, Mumbai, Maharashtra 400026<br>
+                        India <br><br>
+                        <strong>Phone:</strong> +91 9136773576<br>
+                        <strong>Email:</strong> skzainab511@gmail.com<br>
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-md-6 footer-links">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#hero">Home</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#about">About us</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#predict">Prediction</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#team">Contact Us</a></li>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 footer-links">
+                    <h4>References</h4>
+                    <ul>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Deep Learning</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Machine LEarning</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Datasets</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Train model</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6 footer-links">
+                    <h4>Webliography</h4>
+                    <ul>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Deep Learning</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Machine LEarning</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Datasets</a></li>
+                        <li><i class="bx bx-chevron-right"></i> <a href="#">Train model</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container d-md-flex py-4">
+
+        <div class="me-md-auto text-center text-md-start">
+            <div class="copyright">
+                &copy; Copyright <strong><span>SคR¢คSⱮ SŊIʄʄER</span></strong>. All Rights Reserved
+            </div>
+        </div>
+    </div>
+    </div>
+</footer><!-- End Footer -->
+
+<!-- Back to top button -->
+<a href="#hero" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/glightbox/js/glightbox.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/php-email-form/validate.js') }}"></script>
+
+<!-- Template Main JS File -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
