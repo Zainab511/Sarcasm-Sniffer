@@ -4,6 +4,8 @@ Sarcasm Sniffer is situated at the intersection of natural language processing a
 **Twitter Sarcasm Detection Using Machine Learning & Deep Learning Models**
 This repository is focusing on the application and evaluation of machine learning and deep learning models for sarcasm detection within textual data enriched with emojis and hashtags.
 
+![Screenshot (190)](https://github.com/Zainab511/Sarcasm-Sniffer/assets/167059871/7abd04b9-e827-47a1-b740-5e9866204067)
+
 ## Goal
 - Build a good dataset which has sarcastic documents
 - Annotate the data as 0/1 (sarcastic/not sarcastic)
