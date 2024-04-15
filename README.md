@@ -24,6 +24,10 @@ I employed Scraper API as a robust tool for extracting a pertinent dataset of tw
 The utilization of Scraper API facilitated responsible and respectful data gathering, ensuring a seamless and uninterrupted process.
 **Sarcastic_tweets.csv** & **Non_sarcastic_tweets.csv**
 
+- Involves leveraging the 'nltk' library and the SentiWordNet lexical resource in Python. Assigns sentiment scores to words for a nuanced understanding of sentiment. - **SentiWordNet_3.0.0_20130122.txt**
+
+- Pre-trained Word Embeddings - **glove.twitter.27B.100d.txt** https://nlp.stanford.edu/projects/glove/ 
+
 ## Evaluation - Accuracy
 - Logistic Regression - 0.893
 - LSTM - 0.754
