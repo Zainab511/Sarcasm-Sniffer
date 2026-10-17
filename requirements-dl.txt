@@ -1,0 +1,6 @@
+# Deep learning extras: BiLSTM + transformer training / serving
+-r requirements.txt
+torch>=2.2
+transformers>=4.46
+accelerate>=0.26
+tensorflow>=2.16   # only needed for src/train_bilstm.py

@@ -1,22 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-
-    <!-- Favicons -->
-    <link href="{{ url_for('static', filename='img/icon.png') }}" rel="icon">
-    <link href="{{ url_for('static', filename='img/icon.png') }}" rel="apple-touch-icon">
-
-    <link href="../static/css/main.css" rel="stylesheet" type="text/css">
-    <title>Sarcasm Sniffer</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sarcasm Sniffer</title>
+<style>
+  :root { --bg:#fafaf9; --fg:#1c1917; --card:#fff; --muted:#78716c; --border:#e7e5e4; --warm:217,119,6; --cool:37,99,235; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#141413; --fg:#f5f5f4; --card:#1f1e1d; --muted:#a8a29e; --border:#2e2c2a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background:var(--bg); color:var(--fg); }
+  main { max-width: 720px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+  h1 { margin: 0 0 .25rem; font-size: 1.8rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  .card { background: var(--card); border:1px solid var(--border); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
+  textarea { width:100%; min-height: 110px; resize: vertical; border:1px solid var(--border); border-radius:8px; padding:.7rem; font: inherit; background: transparent; color: inherit; }
+  .row { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:.7rem; }
+  select, button { font: inherit; padding:.5rem .9rem; border-radius:8px; border:1px solid var(--border); background: var(--card); color: inherit; cursor:pointer; }
+  button.primary { background: rgb(var(--warm)); border-color: rgb(var(--warm)); color:#fff; }
+  button:disabled { opacity:.5; cursor: progress; }
+  .verdict { font-size:1.25rem; font-weight:600; margin:0 0 .5rem; }
+  .bar { height:10px; border-radius:99px; background:var(--border); overflow:hidden; }
+  .bar > div { height:100%; width:0; background: rgb(var(--warm)); transition: width .4s; }
+  .tokens span { padding:2px 3px; border-radius:4px; line-height:2; }
+  .muted { color: var(--muted); font-size:.9rem; }
+  .err { color:#dc2626; }
+  .hidden { display:none; }
+</style>
 </head>
 <body>
-<h1>
-    <span class="word">Sคr¢คS<span class="superscript">ɱ</span></span>
-    <span class="word">SŋiʄʄeR</span>
-</h1>
-<div id="element1">
-        <a href="{{ url_for('home') }}"><button>Get Started</button></a>
+<main>
+  <h1>Sarcasm Sniffer</h1>
+  <p class="sub">Paste a tweet or sentence. Find out if it is sarcastic, and why.</p>
+
+  <div class="card">
+    <textarea id="text" placeholder="Oh great, another Monday meeting that could have been an email 🙄"></textarea>
+    <div class="row">
+      <select id="model" aria-label="Model">
+        <option value="baseline">Logistic Regression (fast)</option>
+        <option value="transformer">RoBERTa (accurate)</option>
+      </select>
+      <button id="go" class="primary">Sniff it</button>
     </div>
+  </div>
+
+  <div id="result" class="card hidden">
+    <p class="verdict" id="verdict"></p>
+    <div class="bar"><div id="fill"></div></div>
+    <p class="muted" id="detail"></p>
+    <p class="muted">Word influence: <span style="background:rgba(var(--warm),.45);padding:0 4px;border-radius:4px">toward sarcastic</span>
+      <span style="background:rgba(var(--cool),.35);padding:0 4px;border-radius:4px">toward not sarcastic</span></p>
+    <div class="tokens" id="tokens"></div>
+  </div>
+
+  <div class="card">
+    <strong>Batch mode</strong>
+    <p class="muted">Upload a CSV with a <code>text</code> column (max 5000 rows). You get the predictions back as a CSV.</p>
+    <input type="file" id="csv" accept=".csv">
+    <p id="csvStatus" class="muted"></p>
+  </div>
+  <p id="error" class="err"></p>
+</main>
+
+<script>
+const API = window.SNIFFER_API || "";   // same origin by default; set window.SNIFFER_API for a remote API
+const $ = id => document.getElementById(id);
+
+async function post(path, options) {
+  const res = await fetch(API + path, options);
+  if (!res.ok) {
+    let msg = res.statusText;
+    try { msg = (await res.json()).detail || msg; } catch (e) {}
+    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+  }
+  return res.json();
+}
+
+$("go").addEventListener("click", async () => {
+  const text = $("text").value.trim();
+  $("error").textContent = "";
+  if (!text) return;
+  $("go").disabled = true;
+  try {
+    const r = await post("/predict", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, model: $("model").value, explain: true })
+    });
+    $("result").classList.remove("hidden");
+    $("verdict").textContent = r.label === "sarcastic" ? "Sarcasm detected" : "Looks sincere";
+    $("fill").style.width = (r.sarcasm_probability * 100).toFixed(0) + "%";
+    $("detail").textContent = `Sarcasm probability ${(r.sarcasm_probability * 100).toFixed(1)}% - model: ${r.model}`;
+    const box = $("tokens");
+    box.replaceChildren();
+    (r.explanation || []).forEach(t => {
+      const s = document.createElement("span");
+      s.textContent = t.word + " ";
+      const a = Math.min(Math.abs(t.score) * 2.5, 0.65);
+      if (t.score > 0.01) s.style.background = `rgba(var(--warm),${a})`;
+      else if (t.score < -0.01) s.style.background = `rgba(var(--cool),${a})`;
+      s.title = (t.score >= 0 ? "+" : "") + t.score.toFixed(3);
+      box.appendChild(s);
+    });
+  } catch (e) { $("error").textContent = e.message; }
+  $("go").disabled = false;
+});
+
+$("csv").addEventListener("change", async ev => {
+  const file = ev.target.files[0];
+  if (!file) return;
+  $("error").textContent = "";
+  $("csvStatus").textContent = "Working...";
+  try {
+    const fd = new FormData();
+    fd.append("file", file);
+    const rows = await post("/predict/csv?model=" + $("model").value, { method: "POST", body: fd });
+    const esc = v => '"' + String(v).replaceAll('"', '""') + '"';
+    const csv = "text,label,sarcasm_probability\n" +
+      rows.map(r => [esc(r.text), esc(r.label), r.sarcasm_probability].join(",")).join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = "sarcasm_predictions.csv";
+    a.click();
+    $("csvStatus").textContent = `Done: ${rows.length} rows scored.`;
+  } catch (e) { $("csvStatus").textContent = ""; $("error").textContent = e.message; }
+  ev.target.value = "";
+});
+</script>
 </body>
 </html>
