@@ -13,14 +13,16 @@ Source kinds: adyl | generic | headlines | semeval | scraped_pos | scraped_neg
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from .preprocess import clean_text, light_clean
+from .preprocess import LABEL_HASHTAGS, HASHTAG_RE, clean_text, light_clean
 
 TEXT_COLS = ["text", "tweet", "tweets", "content", "headline", "tweet text", "comment", "body"]
+SCRAPED_TEXT_COLS = ["snippet"]  # Scraper API search-result exports
 LABEL_COLS = ["label", "class", "is_sarcastic", "sarcastic", "target"]
 POS = {"1", "true", "yes", "sarcasm", "sarcastic", "irony", "ironic", "figurative"}
 NEG = {"0", "false", "no", "regular", "normal", "notsarcastic", "not_sarcastic",
@@ -35,6 +37,41 @@ def _find_col(df: pd.DataFrame, candidates: list[str], override: str | None) -> 
         if cand in lower:
             return lower[cand]
     raise ValueError(f"Could not find a column among {candidates}. Columns: {list(df.columns)}")
+
+
+# --- cleaning for Scraper API (Google search result) exports -------------------------
+TWEET_TITLE_RE = re.compile(r'on X:\s*"(.*?)"?\s*/\s*X\s*$', re.S)
+STAMP_RE = re.compile(r"\s*\d{1,2}:\d{2}\s?[AP]M\s*\u00b7.*$", re.S)   # "11:40 PM . Jan 5, 2024 . 222 Views"
+TRUNC_RE = re.compile(r"\s*(\.\.\.|\u2026)\s*$")
+META_RE = re.compile(r"\bsarcas\w*|\bironic\w*|\birony\b", re.I)
+
+
+def extract_scraped_text(title, snippet) -> tuple[str, bool]:
+    """Return (tweet text, was_truncated). On X, the real tweet lives in the title."""
+    title, snippet = str(title), str(snippet)
+    m = TWEET_TITLE_RE.search(title)
+    text = m.group(1) if m else snippet
+    text = STAMP_RE.sub("", text)
+    text = re.sub(r"https?://\S+", " ", text)
+    truncated = bool(TRUNC_RE.search(text))
+    text = TRUNC_RE.sub("", text)
+    text = re.sub(r"\s*[\u00b7\u2022]\s*", " ", text)
+    return re.sub(r"\s+", " ", text).strip(" .\"'"), truncated
+
+
+def clean_scraped(df: pd.DataFrame, positive: bool, path: str) -> pd.DataFrame:
+    titles = df["title"] if "title" in df.columns else [""] * len(df)
+    pairs = [extract_scraped_text(t, s) for t, s in zip(titles, df["snippet"])]
+    out = pd.DataFrame({"text": [p[0] for p in pairs], "truncated": [p[1] for p in pairs]})
+    n0 = len(out)
+    has_label_tag = out["text"].map(lambda t: any(h in LABEL_HASHTAGS for h in
+                                                  (x.lower() for x in HASHTAG_RE.findall(t))))
+    about_sarcasm = out["text"].map(lambda t: bool(META_RE.search(HASHTAG_RE.sub("", t))))
+    keep = ~out["truncated"] & ~about_sarcasm
+    keep &= has_label_tag if positive else ~has_label_tag   # positives must carry #sarcasm-style tag
+    out = out[keep]
+    print(f"  {Path(path).name}: kept {len(out)}/{n0} after scraped-snippet cleaning")
+    return out[["text"]]
 
 
 def _norm_label(v) -> int | None:
@@ -61,10 +98,18 @@ def _read_table(path: str) -> pd.DataFrame:
 
 def load_source(kind: str, path: str, text_col=None, label_col=None) -> pd.DataFrame:
     df = _read_table(path)
-    tcol = _find_col(df, TEXT_COLS, text_col)
     if kind in {"scraped_pos", "scraped_neg"}:
+        if "snippet" in {c.lower() for c in df.columns} and not text_col:
+            df = df.rename(columns={c: c.lower() for c in df.columns})
+            clean = clean_scraped(df, positive=(kind == "scraped_pos"), path=path)
+            out = pd.DataFrame({"text": clean["text"].values})
+            out["label"] = 1 if kind == "scraped_pos" else 0
+            out["source"] = Path(path).name
+            return out
+        tcol = _find_col(df, TEXT_COLS, text_col)
         labels = pd.Series([1 if kind == "scraped_pos" else 0] * len(df))
     else:
+        tcol = _find_col(df, TEXT_COLS, text_col)
         lcol = _find_col(df, LABEL_COLS, label_col)
         mapped = df[lcol].map(_norm_label)
         unknown = sorted(set(df.loc[mapped.isna(), lcol].astype(str)))
